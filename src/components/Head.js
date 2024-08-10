@@ -13,6 +13,9 @@ const Head = () => {
     dispatch(toggleMenu())
   }
 
+  const[suggestions,setSuggestions] = useState([]);
+  const[showSuggestions,setShowSuggestions] = useState(false);
+
   //Debouncing for Search Suggestions
   const[searchQuery,setSearchQuery] = useState("");
 
@@ -31,6 +34,7 @@ const Head = () => {
     const data = await fetch(YOUTUBE_SEARCH_API+searchQuery);
     const json = await data.json();
     // console.log(json[1]);
+    setSuggestions(json[1]);
   }
 
 
@@ -52,16 +56,33 @@ const Head = () => {
 
       <div className="m-5">
 
-        <input 
-          type="text"
-          placeholder="Search"
-          className="w-10/12 p-2 border-2 border-black rounded-l-full" 
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button className="bg-black text-white p-[10px] rounded-r-full">
-          Search
-        </button>
+        <div> 
+          <input 
+            type="text"
+            placeholder="Search"
+            className="w-10/12 p-2 border-2 border-black rounded-l-full" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setShowSuggestions(false)}
+          />
+          <button className="bg-black text-white p-[10px] rounded-r-full">
+            Search
+          </button>
+        </div>
+
+        {showSuggestions && (
+          <div className="fixed bg-white py-2 px-2 w-[31rem] shadow-lg rounded-md border border-gray-100">
+            <ul>
+              {suggestions.map((s) => (
+                <li key={s} className="py-2 px-3 shadow-sm hover:bg-gray-100">
+                  🔎︎{s}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
       </div>
 
       <div className="flex justify-end mx-6 mt-6">
